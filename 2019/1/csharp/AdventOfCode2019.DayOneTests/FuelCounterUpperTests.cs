@@ -13,9 +13,16 @@ namespace AdventOfCode2019.DayOneTests
             new FuelCounterUpper(mass).DivideByThree().Compute().Should().Be(result);
 
         [Theory]
+        [InlineData(12, 2)]
+        [InlineData(14, 2)]
         [InlineData(1969, 654)]
         [InlineData(100756, 33583)]
-        public void ShouldFindFuelForAModuleBasedOnMassCorrectly(double mass, double result) =>
+        public void ShouldComputeFuelForAModuleBasedOnMassCorrectly(double mass, double result) =>
             new FuelCounterUpper(mass).DivideByThree().TakeAwayTwo().Compute().Should().Be(result);
+
+        [Theory]
+        [InlineData(new[] {12d, 14d, 1969d, 100756d}, 34241)]
+        public void ShouldSumFuelForAllModules(double[] masses, double sum) =>
+            new FuelCounterUpper(masses).Sum();
     }
 }
