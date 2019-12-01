@@ -1,9 +1,12 @@
+using System;
+
 namespace AdventOfCode2019.DayOne
 {
 
     public class FuelCounterUpper
     {
-        private readonly int _mass;
+        private readonly double _mass;
+        private double _result;
 
         public FuelCounterUpper(int mass)
         {
@@ -12,12 +15,11 @@ namespace AdventOfCode2019.DayOne
 
         public FuelCounterUpper DivideByThree()
         {
+            _result = Math.Floor(_mass / 3);
+
             return this;
         }
 
-        public int Compute()
-        {
-            return 0;
-        }
+        public double Compute() => _result;
     }
 }

@@ -6,10 +6,10 @@ namespace AdventOfCode2019.DayOneTests
 {
     public class FuelCounterUpperTests 
     {
-        [Fact]
-        public void ShouldDivideByThree()
-        {
-            new FuelCounterUpper(12).DivideByThree().Compute().Should().Be(4);
-        }
+        [Theory]
+        [InlineData(12, 4)]
+        [InlineData(14, 4)]
+        public void ShouldDivideByThreeWithRoundingDown(int mass, int result) => 
+            new FuelCounterUpper(mass).DivideByThree().Compute().Should().Be(result);
     }
 }
