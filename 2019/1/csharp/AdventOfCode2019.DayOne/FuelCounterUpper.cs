@@ -8,7 +8,7 @@ namespace AdventOfCode2019.DayOne
         private readonly double _mass;
         private double _result;
 
-        public FuelCounterUpper(int mass)
+        public FuelCounterUpper(double mass)
         {
             _mass = mass;
         }
@@ -16,6 +16,13 @@ namespace AdventOfCode2019.DayOne
         public FuelCounterUpper DivideByThree()
         {
             _result = Math.Floor(_mass / 3);
+
+            return this;
+        }
+
+        public FuelCounterUpper TakeAwayTwo()
+        {
+            _result -= 2;
 
             return this;
         }
