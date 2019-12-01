@@ -44,5 +44,7 @@ namespace AdventOfCode2019.DayOne
         }
 
         public double Compute() => _result;
+
+        public double Count() => DivideByThree().TakeAwayTwo().Compute();
     }
 }
