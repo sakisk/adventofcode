@@ -1,4 +1,6 @@
-﻿using AdventOfCode2019.DayOne;
+﻿using System.IO;
+using System.Linq;
+using AdventOfCode2019.DayOne;
 using FluentAssertions;
 using Xunit;
 
@@ -23,6 +25,16 @@ namespace AdventOfCode2019.DayOneTests
         [Theory]
         [InlineData(new[] {12d, 14d, 1969d, 100756d}, 34241)]
         public void ShouldSumFuelForAllModules(double[] masses, double sum) =>
-            new FuelCounterUpper(masses).Sum();
+            new FuelCounterUpper(masses).Sum().Should().Be(sum);
+
+        [Fact]
+        public void ShouldSumFuelForAllModuleMassesForPuzzleInput()
+        {
+            var masses = File.ReadAllLines("input").Select(double.Parse).ToArray();
+
+            var result = new FuelCounterUpper(masses).Sum();
+
+            result.Should().Be(3297866);
+        }
     }
 }
