@@ -1,37 +1,45 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode2019.DayTwo
 {
     public class IntcodeProcessor
     {
-        private readonly string _input;
+        private readonly IList<int> _input;
+        private int _index;
 
-        public IntcodeProcessor(string input)
+        public static IntcodeProcessor Create(string input) => new IntcodeProcessor(input.Split(',').Select(int.Parse).ToList(), 0);
+        private IntcodeProcessor(IList<int> input, int index)
         {
             _input = input;
-            Result = input;
+            _index = index;
         }
 
         public IntcodeProcessor Process()
         {
-            var ints = _input.Split(',').Select(int.Parse).ToList();
-            var index = 0;
-            var result = _input;
+            var opcode = _input[_index];
 
-            while (index <= ints.Count)
+            if (opcode == 99)
             {
-                var opcode = ints[index];
-
-                if (opcode == 99)
-                {
-                    Result = result;
-                    return new IntcodeProcessor(result);
-                }
+                return new IntcodeProcessor(_input, 0);
             }
 
-            return new IntcodeProcessor(result);
+            if (opcode == 1)
+            {
+                var firstOperandIndex = _input[_index + 1];
+                var secondOperandIndex = _input[_index + 2];
+                var resultIndex = _input[_index + 3];
+
+                _input[resultIndex] = _input[firstOperandIndex] + _input[secondOperandIndex];
+                _index += 4;
+
+                return new IntcodeProcessor(_input, _index);
+            }
+
+            return new IntcodeProcessor(_input, _index);
         }
 
-        public string Result { get; set; }
+
+        public string Result => string.Join(",", _input.Select(x => x.ToString()).ToArray());
     }
 }
