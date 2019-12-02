@@ -7,6 +7,8 @@ namespace AdventOfCode2019.DayTwo
     public class IntcodeProcessor
     {
         private const int HaltOpcode = 99;
+        private const int AddOpcode = 1;
+        private const int MultiplyOpcode = 2;
         private readonly IList<int> _input;
         private int _index;
 
@@ -23,38 +25,34 @@ namespace AdventOfCode2019.DayTwo
         {
             var opcode = input[_index];
 
-
             if (opcode == HaltOpcode)
             {
                 return new IntcodeProcessor(input, 0, shouldHalt: true);
             }
 
-            if (opcode == 1)
+            if (opcode == AddOpcode)
             {
-                var firstOperandIndex = input[_index + 1];
-                var secondOperandIndex = input[_index + 2];
-                var resultIndex = input[_index + 3];
-
-                input[resultIndex] = input[firstOperandIndex] + input[secondOperandIndex];
-                _index += 4;
+                ProcessOperand(input, _index, (first, second) => first + second);
+                MoveToNextOperand();
 
                 return new IntcodeProcessor(input, _index);
             }
 
-            if (opcode == 2)
+            if (opcode == MultiplyOpcode)
             {
-                var firstOperandIndex = input[_index + 1];
-                var secondOperandIndex = input[_index + 2];
-                var resultIndex = input[_index + 3];
-
-                input[resultIndex] = input[firstOperandIndex] * input[secondOperandIndex];
-                _index += 4;
+                ProcessOperand(input, _index, (first, second) => first * second);
+                MoveToNextOperand();
 
                 return new IntcodeProcessor(input, _index);
             }
 
             return new IntcodeProcessor(input, _index);
+
+            void MoveToNextOperand() => _index += 4;
         }
+
+        private static void ProcessOperand(IList<int> input, int index, Func<int, int, int> operation) =>
+            input[input[index + 3]] = operation(input[input[index + 1]], input[input[index + 2]]);
 
         public IntcodeProcessor Process() => Process(_input);
 
