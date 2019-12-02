@@ -10,6 +10,6 @@ namespace AdventOfCode2019.DayTwoTests
         [InlineData("99", "99")]
         [InlineData("99,1,0,0,99", "99,1,0,0,99")]
         public void ShouldProcessProgramHaltOpcode(string input, string result) =>
-            new IntcodeProcessor(input).Process().Should().Be(result);
+            new IntcodeProcessor(input).Process().Result.Should().Be(result);
     }
 }
