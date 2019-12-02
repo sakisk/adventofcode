@@ -33,10 +33,19 @@ namespace AdventOfCode2019.DayTwoTests
             IntcodeProcessor.Create(input).ProcessUntilHalt().Result.Should().Be(result);
 
         [Fact]
-        public void ShouldProcessPuzzleInput() => 
+        public void ShouldProcessInputTo1202ProgramAlarm()
+        {
+            var input = File.ReadAllText("input").Split(',');
+
+            input[1] = "12";
+            input[2] = "2";
+
+            var input1202ProgramAlarm = string.Join(',', input);
+
             IntcodeProcessor
-                .Create(File.ReadAllText("input"))
+                .Create(input1202ProgramAlarm)
                 .ProcessUntilHalt()
                 .Result.Split(',').First().Should().Be("8017076");
+        }
     }
 }
