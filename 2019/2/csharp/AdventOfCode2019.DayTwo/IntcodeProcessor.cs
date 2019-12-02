@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AdventOfCode2019.DayTwo
@@ -8,7 +9,7 @@ namespace AdventOfCode2019.DayTwo
         private const int HaltOpcode = 99;
         private readonly IList<int> _input;
         private int _index;
-        public bool ShouldHalt { get; }
+
 
         public static IntcodeProcessor Create(string input) => new IntcodeProcessor(input.Split(',').Select(int.Parse).ToList(), 0);
         private IntcodeProcessor(IList<int> input, int index, bool shouldHalt = false)
@@ -18,42 +19,44 @@ namespace AdventOfCode2019.DayTwo
             ShouldHalt = shouldHalt;
         }
 
-        public IntcodeProcessor Process()
+        public IntcodeProcessor Process(IList<int> input)
         {
-            var opcode = _input[_index];
+            var opcode = input[_index];
 
 
             if (opcode == HaltOpcode)
             {
-                return new IntcodeProcessor(_input, 0, shouldHalt: true);
+                return new IntcodeProcessor(input, 0, shouldHalt: true);
             }
 
             if (opcode == 1)
             {
-                var firstOperandIndex = _input[_index + 1];
-                var secondOperandIndex = _input[_index + 2];
-                var resultIndex = _input[_index + 3];
+                var firstOperandIndex = input[_index + 1];
+                var secondOperandIndex = input[_index + 2];
+                var resultIndex = input[_index + 3];
 
-                _input[resultIndex] = _input[firstOperandIndex] + _input[secondOperandIndex];
+                input[resultIndex] = input[firstOperandIndex] + input[secondOperandIndex];
                 _index += 4;
 
-                return new IntcodeProcessor(_input, _index);
+                return new IntcodeProcessor(input, _index);
             }
 
             if (opcode == 2)
             {
-                var firstOperandIndex = _input[_index + 1];
-                var secondOperandIndex = _input[_index + 2];
-                var resultIndex = _input[_index + 3];
+                var firstOperandIndex = input[_index + 1];
+                var secondOperandIndex = input[_index + 2];
+                var resultIndex = input[_index + 3];
 
-                _input[resultIndex] = _input[firstOperandIndex] * _input[secondOperandIndex];
+                input[resultIndex] = input[firstOperandIndex] * input[secondOperandIndex];
                 _index += 4;
 
-                return new IntcodeProcessor(_input, _index);
+                return new IntcodeProcessor(input, _index);
             }
 
-            return new IntcodeProcessor(_input, _index);
+            return new IntcodeProcessor(input, _index);
         }
+
+        public IntcodeProcessor Process() => Process(_input);
 
         public string Result => string.Join(",", _input.Select(x => x.ToString()).ToArray());
 
@@ -68,5 +71,24 @@ namespace AdventOfCode2019.DayTwo
 
             return processor;
         }
+
+        public int FindNounAndVerbForInstruction(int instruction)
+        {
+            var noun = instruction / 614400 - 1;
+            var verb = 0;
+            var test = _input.ToList();
+
+            test[1] = noun;
+            test[2] = verb;
+
+            var processor = new IntcodeProcessor(test, 0);
+
+            verb = instruction - processor.ProcessUntilHalt().Instruction;
+
+            return 100 * noun + verb;
+        }
+
+        public bool ShouldHalt { get; }
+        public int Instruction => _input.First();
     }
 }

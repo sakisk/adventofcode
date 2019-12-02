@@ -47,5 +47,9 @@ namespace AdventOfCode2019.DayTwoTests
                 .ProcessUntilHalt()
                 .Result.Split(',').First().Should().Be("8017076");
         }
+
+        [Fact]
+        public void ShouldProcessInputUntilCorrectPointerHasCorrectInstruction() => 
+            IntcodeProcessor.Create(File.ReadAllText("input")).FindNounAndVerbForInstruction(19690720).Should().Be(3146);
     }
 }
