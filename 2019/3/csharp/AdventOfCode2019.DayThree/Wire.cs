@@ -9,12 +9,14 @@ namespace AdventOfCode2019.DayThree
         private readonly (int, int) _centralPort = (0, 0);
         public List<(int, int)> Vertical { get; }
         public List<(int, int)> Horizontal { get; }
+        public List<(int, int)> Trace { get; }
 
         public Wire()
         {
             Tip = _centralPort;
             Horizontal = new List<(int, int)>();
             Vertical = new List<(int, int)>();
+            Trace = new List<(int,int)>();
         }
 
         public void Parse(string[] traces)
@@ -26,7 +28,10 @@ namespace AdventOfCode2019.DayThree
                     var length = int.Parse(trace.Substring(1, trace.Length - 1));
                     for (var i = 1; i <= length; i++)
                     {
-                        Horizontal.Add((Tip.Item1 + i, Tip.Item2));
+                        var point = (Tip.Item1 + i, Tip.Item2);
+
+                        Trace.Add(point);
+                        Horizontal.Add(point);
                     }
                     Tip = Horizontal.Last();
                 }
@@ -36,7 +41,10 @@ namespace AdventOfCode2019.DayThree
                     var length = int.Parse(trace.Substring(1, trace.Length - 1));
                     for (var i = 1; i <= length; i++)
                     {
-                        Horizontal.Add((Tip.Item1 - i, Tip.Item2));
+                        var point = (Tip.Item1 - i, Tip.Item2);
+
+                        Trace.Add(point);
+                        Horizontal.Add(point);
                     }
                     Tip = Horizontal.Last();
                 }
@@ -46,7 +54,10 @@ namespace AdventOfCode2019.DayThree
                     var length = int.Parse(trace.Substring(1, trace.Length - 1));
                     for (var i = 1; i <= length; i++)
                     {
-                        Vertical.Add((Tip.Item1, Tip.Item2 + i));
+                        var point = (Tip.Item1, Tip.Item2 + i);
+
+                        Trace.Add(point);
+                        Vertical.Add(point);
                     }
                     Tip = Vertical.Last();
                 }
@@ -56,7 +67,10 @@ namespace AdventOfCode2019.DayThree
                     var length = int.Parse(trace.Substring(1, trace.Length - 1));
                     for (var i = 1; i <= length; i++)
                     {
-                        Vertical.Add((Tip.Item1, Tip.Item2 - i));
+                        var point = (Tip.Item1, Tip.Item2 - i);
+
+                        Trace.Add(point);
+                        Vertical.Add(point);
                     }
                     Tip = Vertical.Last();
                 }
@@ -83,6 +97,13 @@ namespace AdventOfCode2019.DayThree
                 .OrderBy(x => x)
                 .First();
 
+        public int FindMinStepsIntersection(Wire anotherWire) => 
+            FindIntersections(anotherWire)
+                .Select(x => FindStepsTo(x) + anotherWire.FindStepsTo(x))
+                .Min();
+
         public (int, int) Tip { get; set; }
+
+        public int FindStepsTo((int x, int y) point) => Trace.FindIndex(0, p => p == point) + 1;
     }
 }

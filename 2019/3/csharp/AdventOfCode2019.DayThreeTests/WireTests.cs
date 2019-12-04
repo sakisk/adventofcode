@@ -77,5 +77,40 @@ namespace AdventOfCode2019.DayThreeTests
 
             wire.FindDistanceToNearestIntersectionFromCentralPort(anotherWire).Should().Be(2129);
         }
+
+        [Theory]
+        [InlineData("U7,R6,D4,L4", 6, 5, 15)]
+        [InlineData("U7,R6,D4,L4", 3, 3, 20)]
+        [InlineData("R8,U5,L5,D3", 6, 5, 15)]
+        [InlineData("R8,U5,L5,D3", 3, 3, 20)]
+        public void ShouldMinSumOfStepsEachWireTakesToReachIntersection(string path, int x, int y, int steps)
+        {
+            var wire = WireBuilder.Create(path);
+
+            wire.FindStepsTo((x, y)).Should().Be(steps);
+        }
+
+        [Theory]
+        [InlineData("U7,R6,D4,L4", "R8,U5,L5,D3", 30)]
+        [InlineData("R75,D30,R83,U83,L12,D49,R71,U7,L72", "U62,R66,U55,R34,D71,R55,D58,R83", 610)]
+        [InlineData("R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51", "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7", 410)]
+        public void ShouldFindMinStepsToIntersection(string wire1, string wire2, int steps)
+        {
+            var wire = WireBuilder.Create(wire1);
+            var anotherWire = WireBuilder.Create(wire2);
+
+            wire.FindMinStepsIntersection(anotherWire).Should().Be(steps);
+        }
+
+        [Fact]
+        public void ShouldFindMinStepsToIntersectionFromPuzzleInput()
+        {
+            var traces = File.ReadAllLines("input");
+            var wire = WireBuilder.Create(traces.First());
+            var anotherWire = WireBuilder.Create(traces.Last());
+
+            wire.FindMinStepsIntersection(anotherWire).Should().Be(134662);
+        }
+
     }
 }
