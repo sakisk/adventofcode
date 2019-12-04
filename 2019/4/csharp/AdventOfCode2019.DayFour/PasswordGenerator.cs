@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventOfCode2019.DayFourTests
+namespace AdventOfCode2019.DayFour
 {
     public class PasswordGenerator
     {
@@ -20,20 +19,20 @@ namespace AdventOfCode2019.DayFourTests
             return HasSixDigits(password) && HasAtLeastADouble(adjacentPairs) && DigitsIncreaseFromLeftToRight(adjacentPairs);
         }
 
-        public static IEnumerable<int> PasswordsInRange(Range range)
+        public static IEnumerable<int> PasswordsInRange(int start, int end)
         {
-            var nextPassword = range.Start.Value;
+            var nextPassword = start;
 
             if (IsValidPassword(nextPassword))
                 yield return nextPassword;
 
-            if (IsValidPassword(range.End.Value))
-                yield return range.End.Value;
+            if (IsValidPassword(end))
+                yield return end;
 
-            while (nextPassword < range.End.Value)
+            while (nextPassword < end)
             {
                 nextPassword = Next(nextPassword);
-                if (nextPassword < range.End.Value)
+                if (nextPassword < end)
                     yield return nextPassword;
             }
         }

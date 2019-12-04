@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using AdventOfCode2019.DayFour;
 using FluentAssertions;
 using Xunit;
 
@@ -24,6 +24,6 @@ namespace AdventOfCode2019.DayFourTests
         [InlineData(111111, 111112, 2)]
         [InlineData(137683, 596253, 1864)]
         public void ShouldGenerateValidPasswordsInRange(int start, int end, int count) =>
-            PasswordGenerator.PasswordsInRange(new Range(start, end)).Distinct().Count().Should().Be(count);
+            PasswordGenerator.PasswordsInRange(start, end).Distinct().Count().Should().Be(count);
     }
 }
