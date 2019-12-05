@@ -8,6 +8,7 @@ namespace AdventOfCode2019.DayFour
         public int Value { get; }
         public IList<(char, char)> AdjacentDigitsPairs { get; }
         public IDictionary<char, int> DigitsFrequencies { get; }
+        public int NumberOfDigits => Value.ToString().Length;
 
         public Password(int value)
         {

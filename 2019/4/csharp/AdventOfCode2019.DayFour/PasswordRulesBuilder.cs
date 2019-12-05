@@ -28,7 +28,7 @@ namespace AdventOfCode2019.DayFour
 
         public IEnumerable<Func<Password, bool>> Build() => _rules;
 
-        private static bool HasSixDigits(Password password) => password.Value >= 111111;
+        private static bool HasSixDigits(Password password) => password.NumberOfDigits == 6;
         
         private static bool HasAtLeastADouble(Password password) => password.AdjacentDigitsPairs.Any(x => x.Item1 == x.Item2);
 
