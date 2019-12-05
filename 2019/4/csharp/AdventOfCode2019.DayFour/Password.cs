@@ -6,12 +6,14 @@ namespace AdventOfCode2019.DayFour
     public class Password
     {
         public int Value { get; }
-        public IList<(char, char)> PairsOfDigits { get; set; }
+        public IList<(char, char)> AdjacentDigitsPairs { get; set; }
+        public IDictionary<char, int> DigitsFrequencies { get; set; }
 
         public Password(int value)
         {
             Value = value;
-            PairsOfDigits = GetAdjacentPairs(value);
+            AdjacentDigitsPairs = GetAdjacentPairs(value);
+            DigitsFrequencies = GetDigitsFrequencies(value);
         }
 
         private static IList<(char, char)> GetAdjacentPairs(int password)
@@ -20,5 +22,10 @@ namespace AdventOfCode2019.DayFour
 
             return digits.Zip(digits.Skip(1), (first, second) => (first, second)).ToList();
         }
+
+        private static IDictionary<char, int> GetDigitsFrequencies(int password) =>
+            password.ToString().ToCharArray()
+                .GroupBy(x => x)
+                .ToDictionary(x => x.Key, x => x.Count());
     }
 }
