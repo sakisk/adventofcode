@@ -6,8 +6,8 @@ namespace AdventOfCode2019.DayFour
     public class Password
     {
         public int Value { get; }
-        public IList<(char, char)> AdjacentDigitsPairs { get; set; }
-        public IDictionary<char, int> DigitsFrequencies { get; set; }
+        public IList<(char, char)> AdjacentDigitsPairs { get; }
+        public IDictionary<char, int> DigitsFrequencies { get; }
 
         public Password(int value)
         {
