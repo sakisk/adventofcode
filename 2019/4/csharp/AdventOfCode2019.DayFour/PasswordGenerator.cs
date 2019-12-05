@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode2019.DayFour
 {
     public class PasswordGenerator 
     {
-        private readonly IValidatePassword _passwordValidator;
+        private readonly IEnumerable<Func<Password, bool>> _rules;
 
-        public PasswordGenerator(IValidatePassword passwordValidator)
+        public PasswordGenerator(IEnumerable<Func<Password, bool>> rules)
         {
-            _passwordValidator = passwordValidator;
+            _rules = rules;
         }
+
         public int Next(int start)
         {
             while (true)
@@ -18,7 +21,7 @@ namespace AdventOfCode2019.DayFour
             }
         }
 
-        public bool IsValidPassword(int password) => _passwordValidator.IsValid(password);
+        public bool IsValidPassword(int password) => _rules.Select(validate => validate(new Password(password))).All(x => x);
 
 
         public IEnumerable<int> PasswordsInRange(int start, int end)
