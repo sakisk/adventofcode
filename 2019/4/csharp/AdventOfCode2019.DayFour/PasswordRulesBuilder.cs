@@ -19,10 +19,6 @@ namespace AdventOfCode2019.DayFour
 
         public IEnumerable<Func<Password, bool>> Build() => _rules;
 
-        private static bool HasSixDigits(Password password) => password.Value >= 111111;
-        private static bool HasAtLeastADouble(Password password) => password.PairsOfDigits.Any(x => x.Item1 == x.Item2);
-        private static bool DigitsIncreaseFromLeftToRight(Password password) => !password.PairsOfDigits.Any(x => x.Item1 > x.Item2);
-
         public PasswordRulesBuilder ForPartTwo()
         {
             _rules.Add(HasSixDigits);
@@ -31,6 +27,12 @@ namespace AdventOfCode2019.DayFour
 
             return this;
         }
+
+        private static bool HasSixDigits(Password password) => password.Value >= 111111;
+        
+        private static bool HasAtLeastADouble(Password password) => password.PairsOfDigits.Any(x => x.Item1 == x.Item2);
+
+        private static bool DigitsIncreaseFromLeftToRight(Password password) => !password.PairsOfDigits.Any(x => x.Item1 > x.Item2);
 
         private static bool HasAtLeastOneDigitExactlyTwice(Password password) =>
             password.Value.ToString().ToCharArray()

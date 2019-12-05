@@ -41,14 +41,13 @@ namespace AdventOfCode2019.DayFourTests
         }
 
         [Theory]
-        [InlineData(111111, 111111, 1)]
         [InlineData(111111, 111112, 2)]
         [InlineData(137683, 596253, 1864)]
         public void ShouldGenerateValidPasswordsInRangeForPartOne(int start, int end, int count)
         {
             var ruleSet = new PasswordRulesBuilder().ForPartOne().Build();
 
-            new PasswordGenerator(ruleSet).PasswordsInRange(start, end).Distinct().Count().Should().Be(count);
+            new PasswordGenerator(ruleSet).PasswordsInRange(start, end).Count().Should().Be(count);
         }
 
         [Theory]
@@ -57,7 +56,7 @@ namespace AdventOfCode2019.DayFourTests
         {
             var ruleSet = new PasswordRulesBuilder().ForPartTwo().Build();
 
-            new PasswordGenerator(ruleSet).PasswordsInRange(start, end).Distinct().Count().Should().Be(count);
+            new PasswordGenerator(ruleSet).PasswordsInRange(start, end).Count().Should().Be(count);
         }
     }
 }
