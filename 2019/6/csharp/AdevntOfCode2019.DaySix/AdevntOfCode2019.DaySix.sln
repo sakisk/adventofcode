@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdevntOfCode2019.DaySix", "AdevntOfCode2019.DaySix.csproj", "{8C6251D8-3591-4550-8AC8-340EFBA42787}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode2019.DaySix", "AdventOfCode2019.DaySix.csproj", "{8C6251D8-3591-4550-8AC8-340EFBA42787}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdevntOfCode2019.DaySixTests", "..\AdevntOfCode2019.DaySixTests\AdevntOfCode2019.DaySixTests.csproj", "{06F05716-CEB6-474B-ADC6-4560462F1D3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode2019.DaySixTests", "..\AdevntOfCode2019.DaySixTests\AdventOfCode2019.DaySixTests.csproj", "{06F05716-CEB6-474B-ADC6-4560462F1D3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
