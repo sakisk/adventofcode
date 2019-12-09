@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode2019.DaySeven", "AdventOfCode2019.DaySeven\AdventOfCode2019.DaySeven.csproj", "{05A854A9-4F73-41C2-B55A-AEC46D003F48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2019.DaySevenTests", "AdventOfCode2019.DaySevenTests\AdventOfCode2019.DaySevenTests.csproj", "{17288719-D668-4D86-BBD8-C6C059864240}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode2019.DaySevenTests", "AdventOfCode2019.DaySevenTests\AdventOfCode2019.DaySevenTests.csproj", "{17288719-D668-4D86-BBD8-C6C059864240}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode2019.DayFive", "..\..\5\csharp\AdventOfCode2019.DayFive\AdventOfCode2019.DayFive.csproj", "{EDBFE635-7E43-4EB3-AFCE-47496E039F14}"
 EndProject
