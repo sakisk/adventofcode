@@ -38,7 +38,7 @@ namespace AdventOfCode2019.DayFive
                     _program[MemoryAddress(3)] = Operand(1) * Operand(2);
                     return new IntcodeComputer(_program, _pc + 4);
                 case 3:
-                    _program[MemoryAddress(1)] = input.Value;
+                    if (input.HasValue) _program[MemoryAddress(1)] = input.Value;
                     return new IntcodeComputer(_program, _pc + 2);
                 case 4:
                     return new IntcodeComputer(_program, _pc + 2, output: Operand(1));

@@ -4,4 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\5\csharp\AdventOfCode2019.DayFive\AdventOfCode2019.DayFive.csproj" />
+  </ItemGroup>
+
 </Project>
