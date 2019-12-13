@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using AdventOfCode2019.DayTen;
 using FluentAssertions;
 using Xunit;
@@ -20,7 +23,7 @@ namespace AdventOfCode2019.DayTenTests
         {
             var m = map.Split(Environment.NewLine);
 
-            new AsteroidMonitoringStation(m).Asteroids.Should().HaveCount(asteroidsCount);
+            AsteroidMonitoringStation.Create(m).Asteroids.Should().HaveCount(asteroidsCount);
         }
 
         [Theory]
@@ -34,7 +37,7 @@ namespace AdventOfCode2019.DayTenTests
         {
             var m = map.Split(Environment.NewLine);
 
-            new AsteroidMonitoringStation(m).Asteroids.Should().ContainSingle(asteroid => asteroid.X == x && asteroid.Y == y);
+            AsteroidMonitoringStation.Create(m).Asteroids.Should().ContainSingle(asteroid => asteroid.X == x && asteroid.Y == y);
         }
 
         [Theory]
@@ -104,9 +107,10 @@ namespace AdventOfCode2019.DayTenTests
         public void ShouldDetectAsteroidsInDirectLineOfSight(string map, int x, int y, int detectedAsteroidsCount)
         {
             var m = map.Split(Environment.NewLine);
+
             var expectedStation = (x, y);
 
-            var asteroidMonitoringStation = new AsteroidMonitoringStation(m);
+            var asteroidMonitoringStation = AsteroidMonitoringStation.Create(m);
 
             asteroidMonitoringStation.DetectAsteroidsInSight((x, y)).Should().HaveCount(detectedAsteroidsCount);
 
@@ -116,8 +120,7 @@ namespace AdventOfCode2019.DayTenTests
         [Fact]
         public void SolutionForPartOne()
         {
-            var map = @"
-#....#.....#...#.#.....#.#..#....#
+            const string map = @"#....#.....#...#.#.....#.#..#....#
 #..#..##...#......#.....#..###.#.#
 #......#.#.#.....##....#.#.....#..
 ..#.#...#.......#.##..#...........
@@ -152,13 +155,165 @@ namespace AdventOfCode2019.DayTenTests
 .#.##.#.#.....#..#..#........##...
 ....#...##.##.##......#..#..##....";
 
-            var asteroidMonitoringStation = new AsteroidMonitoringStation(map.Split(Environment.NewLine));
+            var asteroidMonitoringStation = AsteroidMonitoringStation.Create(map.Split(Environment.NewLine));
 
             var stationLocation = asteroidMonitoringStation.FindLocationWithMostAsteroidsInDirectSight();
 
-            stationLocation.Should().Be((26, 29));
+            stationLocation.Should().Be((26, 28));
 
             asteroidMonitoringStation.DetectAsteroidsInSight(stationLocation).Should().HaveCount(267);
         }
+
+
+        [Fact]
+        public void SolutionForPartTwo()
+        {
+            const string map = @"#....#.....#...#.#.....#.#..#....#
+#..#..##...#......#.....#..###.#.#
+#......#.#.#.....##....#.#.....#..
+..#.#...#.......#.##..#...........
+.##..#...##......##.#.#...........
+.....#.#..##...#..##.....#...#.##.
+....#.##.##.#....###.#........####
+..#....#..####........##.........#
+..#...#......#.#..#..#.#.##......#
+.............#.#....##.......#...#
+.#.#..##.#.#.#.#.......#.....#....
+.....##.###..#.....#.#..###.....##
+.....#...#.#.#......#.#....##.....
+##.#.....#...#....#...#..#....#.#.
+..#.............###.#.##....#.#...
+..##.#.........#.##.####.........#
+##.#...###....#..#...###..##..#..#
+.........#.#.....#........#.......
+#.......#..#.#.#..##.....#.#.....#
+..#....#....#.#.##......#..#.###..
+......##.##.##...#...##.#...###...
+.#.....#...#........#....#.###....
+.#.#.#..#............#..........#.
+..##.....#....#....##..#.#.......#
+..##.....#.#......................
+.#..#...#....#.#.....#.........#..
+........#.............#.#.........
+#...#.#......#.##....#...#.#.#...#
+.#.....#.#.....#.....#.#.##......#
+..##....#.....#.....#....#.##..#..
+#..###.#.#....#......#...#........
+..#......#..#....##...#.#.#...#..#
+.#.##.#.#.....#..#..#........##...
+....#...##.##.##......#..#..##....";
+
+            var asteroidMonitoringStation = AsteroidMonitoringStation.Create(map.Split(Environment.NewLine));
+
+            while (asteroidMonitoringStation.Asteroids.Count > 1)
+            {
+                asteroidMonitoringStation = asteroidMonitoringStation.Vaporize((26, 28));
+            }
+
+            asteroidMonitoringStation.Vaporized.Select(x => x.Asteroid).ElementAt(199).Should().Be((13, 9));
+        }
+
+        [Theory]
+        [InlineData(@".#..##.###...#######
+##.############..##.
+.#.######.########.#
+.###.#######.####.#.
+#####.##.#.##.###.##
+..#####..#.#########
+####################
+#.####....###.#.#.##
+##.#################
+#####.##.###..####..
+..######..##.#######
+####.##.####...##..#
+.#####..#.######.###
+##...#.##########...
+#.##########.#######
+.####.#.###.###.#.##
+....##.##.###..#####
+.#.#.###########.###
+#.#.#.#####.####.###
+###.##.####.##.#..##", 11, 13)]
+        public void ShouldVaporizeAsteroidsInCorrectOrder(string map, int x, int y)
+        {
+            var asteroidMonitoringStation = AsteroidMonitoringStation.Create(map.Split(Environment.NewLine));
+
+            while (asteroidMonitoringStation.Asteroids.Count > 1)
+            {
+                asteroidMonitoringStation = asteroidMonitoringStation.Vaporize((x, y));
+            }
+
+            var indexes = new[] { 0, 1, 2, 9, 19, 49, 99, 198, 199, 200, 298 };
+            asteroidMonitoringStation.Vaporized
+                .Where((a, i) => indexes.Contains(i))
+                .Select(a => a.Asteroid)
+                .Should()
+                .BeEquivalentTo(new[]
+                {
+                    (11, 12), (12, 1), (12, 2), (12, 8), (16, 0), (16, 9), (10, 16), (9, 6), (8, 2), (10, 9), (11, 1)
+                });
+        }
+
+        [Theory]
+        [ClassData(typeof(VaporizedAsteroidsData))]
+        public void ShouldVaporizeCorrectAsteroidsInEveryRotation(string map, (int X, int Y) station, int batchSize, (int X, int Y)[] vaporized, int rotation)
+        {
+            var asteroidMonitoringStation = AsteroidMonitoringStation.Create(map.Split(Environment.NewLine));
+
+            for (var i = 0; i < rotation; i++)
+                asteroidMonitoringStation = asteroidMonitoringStation.Vaporize(station);
+
+            asteroidMonitoringStation.Vaporized
+                .Select(x => x.Asteroid)
+                .Skip((rotation - 1) * batchSize)
+                .Take(batchSize)
+                .Should().BeEquivalentTo(vaporized);
+        }
     }
+
+    public class VaporizedAsteroidsData : IEnumerable<object[]>
+    {
+        public IEnumerator<object[]> GetEnumerator()
+        {
+            yield return new object[]
+            {
+                @".#....#####...#..
+##...##.#####..##
+##...#...#.#####.
+..#.....X...###..
+..#.#.....#....##",
+                (8, 3), 9, new[] {(8,1),(9,0),(9,1),(10,0),(9,2),(11,1),(12,1),(11,2),(15,1)}, 1 };
+
+            yield return new object[]
+            {
+                @".#....#####...#..
+##...##.#####..##
+##...#...#.#####.
+..#.....X...###..
+..#.#.....#....##",
+                (8, 3), 9, new[] {(12,2),(13,2),(14,2),(15,2),(12,3),(16,4),(15,4),(10,4),(4,4)}, 2 };
+
+            yield return new object[]
+            {
+                @".#....#####...#..
+##...##.#####..##
+##...#...#.#####.
+..#.....X...###..
+..#.#.....#....##",
+                (8, 3), 9, new[] {(2,4),(2,3),(0,2),(1,2),(0,1),(1,1),(5,2),(1,0),(5,1)}, 3 };
+
+            yield return new object[]
+            {
+                @".#....#####...#..
+##...##.#####..##
+##...#...#.#####.
+..#.....X...###..
+..#.#.....#....##",
+                (8, 3), 9, new[] {(6,1),(6,0),(7,0),(8,0),(10,1),(14,0),(16,1),(13,3),(14,3)}, 4 };
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+
 }
