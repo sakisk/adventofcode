@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29609.76
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode2019.DayNine", "AdventOfCode2019.DayNine\AdventOfCode2019.DayNine\AdventOfCode2019.DayNine.csproj", "{759B3175-A111-421E-8D19-C4777E9673E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2019.DayNineTests", "AdventOfCode2019.DayNineTests\AdventOfCode2019.DayNineTests.csproj", "{F259761B-C70C-4FB6-B662-6904230FF14F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{759B3175-A111-421E-8D19-C4777E9673E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{759B3175-A111-421E-8D19-C4777E9673E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{759B3175-A111-421E-8D19-C4777E9673E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{759B3175-A111-421E-8D19-C4777E9673E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F259761B-C70C-4FB6-B662-6904230FF14F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F259761B-C70C-4FB6-B662-6904230FF14F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F259761B-C70C-4FB6-B662-6904230FF14F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F259761B-C70C-4FB6-B662-6904230FF14F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4D64F585-8AD5-4A7A-980F-03C77381C12B}
+	EndGlobalSection
+EndGlobal
