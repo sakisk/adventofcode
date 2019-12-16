@@ -1,78 +1,133 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AdventOfCode2019.DayFive
 {
     public class IntcodeComputer
     {
-        public int? Output { get; }
+        public bool Completed { get; set; }
+        public string Memory => string.Join(",", _memory.Select(x => x.ToString()));
+        public int RelativeBase { get; set; }
 
-        public bool Completed { get; }
-
-        public string Program => string.Join(",", _program.Select(x => x.ToString()));
-
-        private readonly IList<int> _program;
-
+        private readonly IList<long> _memory;
         private int _pc;
+        private static long? _input;
+        private MemoryManager _memoryManager;
+        public IList<long?> Output { get; }
 
-        public static IntcodeComputer Create(string program) => new IntcodeComputer(ToInt(program), 0);
-
-        private IntcodeComputer(IList<int> program, int pc, int? output = default, bool completed = false)
+        public static IntcodeComputer Create(string program, int maxMemory = 0, int relativeBase = 0,
+            long? input = default)
         {
-            Output = output;
-            Completed = completed;
-            _program = program;
+            var intCode = ToIntcode(program);
+
+            var maxMemorySize = maxMemory <= relativeBase + intCode.Count
+                ? relativeBase + intCode.Count
+                : maxMemory;
+
+            return new IntcodeComputer(intCode, pc: 0, relativeBase: relativeBase, maxMemorySize: maxMemorySize,
+                input: input);
+        }
+
+        private IntcodeComputer(IList<long> memory, int pc, int relativeBase, int maxMemorySize, long? input = default)
+        {
+            Output = new List<long?>();
+            RelativeBase = relativeBase;
+            _memory = maxMemorySize > 0
+                ? new List<long>(memory.Concat(Enumerable.Repeat(0L, maxMemorySize - memory.Count)))
+                : memory;
             _pc = pc;
+            _input = input;
+            _memoryManager = new MemoryManager(_memory, _pc, relativeBase);
         }
 
-        public IntcodeComputer Process(int? input = default)
+        public void Process()
         {
-            switch (int.Parse(new string(_program[_pc].ToString("D5").Substring(3, 2).ToCharArray())))
+            var instructionSet = new Dictionary<int, Action>
             {
-                case 99:
-                    return new IntcodeComputer(_program, _pc,  completed: true);
-                case 1:
-                    _program[MemoryAddress(3)] = Operand(1) + Operand(2);
-                    return new IntcodeComputer(_program, _pc + 4);
-                case 2:
-                    _program[MemoryAddress(3)] = Operand(1) * Operand(2);
-                    return new IntcodeComputer(_program, _pc + 4);
-                case 3:
-                    _program[MemoryAddress(1)] = input.Value;
-                    return new IntcodeComputer(_program, _pc + 2);
-                case 4:
-                    return new IntcodeComputer(_program, _pc + 2, output: Operand(1));
-                case 5:
-                    _pc = Operand(1) != 0 ? Operand(2) : _pc + 3;
-                    return new IntcodeComputer(_program, _pc);
-                case 6:
-                    _pc = Operand(1) == 0 ? Operand(2) : _pc + 3;
-                    return new IntcodeComputer(_program, _pc);
-                case 7:
-                    _program[MemoryAddress(3)] = Operand(1) < Operand(2) ? 1 : 0;
-                    return new IntcodeComputer(_program, _pc + 4);
-                case 8:
-                    _program[MemoryAddress(3)] = Operand(1) == Operand(2) ? 1 : 0;
-                    return new IntcodeComputer(_program, _pc + 4);
-                default:
-                    return new IntcodeComputer(_program, _pc);
-            }
+                {1, Add},
+                {2, Multiply},
+                {3, StoreInput},
+                {4, StoreOutput},
+                {5, JumpIfNotEqual},
+                {6, JumpIfEqual},
+                {7, LessThan},
+                {8, Equals},
+                {9, SetRelativeBase},
+                {99, Halt}
+            };
+
+            instructionSet[_memoryManager.OperationCode].Invoke();
         }
 
-        private int Mode(int offset) => _program[_pc].ToString("D5")
-            .Substring(0, 3)
-            .Reverse()
-            .Select(x => (int)char.GetNumericValue(x))
-            .ToList()[offset - 1];
+        public void ProcessToEnd()
+        {
+            while(!Completed)
+                Process();
+        }
 
-        private int Operand(int offset) => Mode(offset) == 0
-            ? _program[_program[_pc + offset]]
-            : _program[_pc + offset];
+        private void Halt() => Completed = true;
 
-        private int MemoryAddress(int offset) => Mode(3) == 0
-            ? _program[_pc + offset]
-            : _pc + offset;
+        private void Add()
+        {
+            _memory[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) + _memoryManager.Operand(2);
+            _memoryManager.NextInstruction(4);
+        }
 
-        private static IList<int> ToInt(string program) => program.Split(',').Select(int.Parse).ToList();
+        private void Multiply()
+        {
+            _memory[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) * _memoryManager.Operand(2);
+            _memoryManager.NextInstruction(4);
+        }
+
+        private void StoreInput()
+        {
+            _memory[_memoryManager.GetAddressIndex(1)] = _input ?? default;
+            _memoryManager.NextInstruction(2);
+        }
+
+        private void StoreOutput()
+        {
+            Output.Add(_memoryManager.Operand(1));
+            _memoryManager.NextInstruction(2);
+        }
+
+        private void JumpIfNotEqual()
+        {
+            if (_memoryManager.Operand(1) != 0)
+                _memoryManager.ProgramCounter = (int) _memoryManager.Operand(2);
+            else
+                _memoryManager.ProgramCounter += 3;
+        }
+
+        private void JumpIfEqual()
+        {
+            if (_memoryManager.Operand(1) == 0)
+                _memoryManager.ProgramCounter = (int) _memoryManager.Operand(2);
+            else
+                _memoryManager.ProgramCounter += 3;
+        }
+
+        private void LessThan()
+        {
+            _memory[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) < _memoryManager.Operand(2) ? 1 : 0;
+            _memoryManager.NextInstruction(4);
+        }
+
+        private void Equals()
+        {
+            _memory[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) == _memoryManager.Operand(2) ? 1 : 0;
+            _memoryManager.NextInstruction(4);
+        }
+
+        private void SetRelativeBase()
+        {
+            _memoryManager.RelativeBase += (int)_memoryManager.Operand(1);
+            RelativeBase = _memoryManager.RelativeBase;
+            _memoryManager.NextInstruction(2);
+        }
+
+        private static IList<long> ToIntcode(string program) => program.Split(',').Select(long.Parse).ToList();
     }
+
 }
