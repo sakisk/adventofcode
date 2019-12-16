@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using AdventOfCode2019.DayFive;
 using FluentAssertions;
@@ -10,19 +9,34 @@ namespace AdventOfCode2019.DayFiveTests
     public class IntcodeComputerTests
     {
         [Fact]
-        public void ShouldCompleteOnHaltOpcode() => IntcodeComputer.Create("99").Process().Completed.Should().BeTrue();
+        public void ShouldCompleteOnHaltOpcode()
+        {
+            var computer = IntcodeComputer.Create("99");
+            computer.Process();
+            computer.Completed.Should().BeTrue();
+        }
 
         [Theory]
         [InlineData("1,0,0,0,99", "2,0,0,0,99", default)]
         [InlineData("2,0,0,0,99", "4,0,0,0,99", default)]
         [InlineData("3,0,99", "1,0,99", 1)]
         [InlineData("1002,4,3,4,33", "1002,4,3,4,99")]
-        public void ShouldExecuteOperation(string program, string result, int? input = default) => IntcodeComputer.Create(program).Process(input).Program.Should().Be(result);
+        public void ShouldExecuteOperation(string program, string result, int? input = default)
+        {
+            var computer = IntcodeComputer.Create(program, input: input);
+            computer.Process();
+            computer.Memory.Should().Be(result);
+        }
 
         [Theory]
         [InlineData("4,0,99", 4)]
         [InlineData("4,2,99", 99)]
-        public void ShouldOutput(string program, int output) => IntcodeComputer.Create(program).Process().Output.Should().Be(output);
+        public void ShouldOutput(string program, int output)
+        {
+            var computer = IntcodeComputer.Create(program);
+            computer.Process();
+            computer.Output.Last().Should().Be(output);
+        }
 
         [Theory]
         [InlineData(1, 14155342)]
@@ -30,18 +44,11 @@ namespace AdventOfCode2019.DayFiveTests
         public void SolutionForParts(int input, int solution)
         {
             var program = File.ReadAllText("input");
-            var computer = IntcodeComputer.Create(program).Process(input);
-            var outputs = new List<int>();
+            var computer = IntcodeComputer.Create(program, input: input);
 
-            while (!computer.Completed)
-            {
-                computer = computer.Process();
+            computer.ProcessToEnd();
 
-                if (!computer.Completed && computer.Output.HasValue)
-                    outputs.Add(computer.Output.Value);
-            }
-
-            outputs.Last().Should().Be(solution);
+            computer.Output.Last().Should().Be(solution);
         }
 
         [Theory]
@@ -59,18 +66,11 @@ namespace AdventOfCode2019.DayFiveTests
         [InlineData("3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99", 9, 1001)]
         public void ShouldOutputResultForEnhancedInstructionSet(string program, int? input, int? output)
         {
-            var computer = IntcodeComputer.Create(program).Process(input);
-            var outputs = new List<int>();
+            var computer = IntcodeComputer.Create(program, input: input);
 
-            while (!computer.Completed)
-            {
-                computer = computer.Process();
+            computer.ProcessToEnd();
 
-                if (!computer.Completed && computer.Output.HasValue)
-                    outputs.Add(computer.Output.Value);
-            }
-
-            outputs.Last().Should().Be(output);
+            computer.Output.Last().Should().Be(output);
         }
     }
 }
