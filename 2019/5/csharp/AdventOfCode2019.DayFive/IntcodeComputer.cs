@@ -8,7 +8,7 @@ namespace AdventOfCode2019.DayFive
     {
         public bool Completed { get; set; }
         public string Memory => string.Join(",", _memory.Select(x => x.ToString()));
-        public int RelativeBase { get; set; }
+        private int RelativeBase { get; set; }
 
         private readonly IList<long> _memory;
         private int _pc;
@@ -16,8 +16,7 @@ namespace AdventOfCode2019.DayFive
         private MemoryManager _memoryManager;
         public IList<long?> Output { get; }
 
-        public static IntcodeComputer Create(string program, int maxMemory = 0, int relativeBase = 0,
-            long? input = default)
+        public static IntcodeComputer Create(string program, int maxMemory = 0, int relativeBase = 0, long? input = default)
         {
             var intCode = ToIntcode(program);
 
@@ -25,8 +24,7 @@ namespace AdventOfCode2019.DayFive
                 ? relativeBase + intCode.Count
                 : maxMemory;
 
-            return new IntcodeComputer(intCode, pc: 0, relativeBase: relativeBase, maxMemorySize: maxMemorySize,
-                input: input);
+            return new IntcodeComputer(intCode, pc: 0, relativeBase: relativeBase, maxMemorySize: maxMemorySize, input: input);
         }
 
         private IntcodeComputer(IList<long> memory, int pc, int relativeBase, int maxMemorySize, long? input = default)
@@ -128,6 +126,8 @@ namespace AdventOfCode2019.DayFive
         }
 
         private static IList<long> ToIntcode(string program) => program.Split(',').Select(long.Parse).ToList();
+
+        public void SetInput(long input) => _input = input;
     }
 
 }

@@ -17,13 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdventOfCode2019.DayFive\AdventOfCode2019.DayFive.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="input">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\..\..\5\csharp\AdventOfCode2019.DayFive\AdventOfCode2019.DayFive.csproj" />
+    <ProjectReference Include="..\AdventOfCode2019.DayEleven\AdventOfCode2019.DayEleven.csproj" />
   </ItemGroup>
 
 </Project>
