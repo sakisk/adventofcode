@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using AdventOfCode2019.DayTwelve;
 using FluentAssertions;
 using Xunit;
@@ -22,7 +25,6 @@ namespace AdventOfCode2019.DayTwelveTests
         [Fact]
         public void ShouldInitializeOrbitDashboardWithCorrectInitialMoonPositionsAndVelocities()
         {
-
             var expected = new List<(int, int, int)>
             {
                 (-1, 0, 2),
@@ -31,7 +33,7 @@ namespace AdventOfCode2019.DayTwelveTests
                 (3, 5, -1)
             };
 
-            _orbitDashboard.Positions.Should().BeEquivalentTo(expected);
+            _orbitDashboard.Moons.Should().BeEquivalentTo(expected);
             _orbitDashboard.Velocities.Should().HaveCount(4);
             _orbitDashboard.Velocities.Should().AllBeEquivalentTo((0, 0, 0));
         }
@@ -58,33 +60,27 @@ namespace AdventOfCode2019.DayTwelveTests
             };
 
             _orbitDashboard.Velocities.Should().BeEquivalentTo(expectedVelocities);
-            _orbitDashboard.Positions.Should().BeEquivalentTo(expectedPositions);
+            _orbitDashboard.Moons.Should().BeEquivalentTo(expectedPositions);
         }
 
         [Theory]
         [MemberData(nameof(MovingStepsTestCases))]
-        public void ShouldShowCorrectPositionsAfterStepsOfGravitationalChanges(string currentPosition, (int X, int Y, int Z)[] nextPosition, int steps)
+        public void ShouldShowCorrectPositionsAfterStepsOfGravitationalChanges(string currentPosition,
+            (int X, int Y, int Z)[] nextPosition, int steps)
         {
             var orbitDashboard = new OrbitDashboard(currentPosition);
 
             orbitDashboard.Move(steps);
 
-            orbitDashboard.Positions.Should().BeEquivalentTo(nextPosition);
+            orbitDashboard.Moons.Should().BeEquivalentTo(nextPosition);
         }
 
         [Fact]
         public void ShouldCalculateSystemTotalEnergy()
         {
-            const string positions = @"<x=-1, y=0, z=2>
-<x=2, y=-10, z=-7>
-<x=4, y=-8, z=8>
-<x=3, y=5, z=-1>";
+            _orbitDashboard.Move(10);
 
-            var orbitDashboard = new OrbitDashboard(positions);
-
-            orbitDashboard.Move(10);
-
-            orbitDashboard.TotalEnergy.Should().Be(179);
+            _orbitDashboard.TotalEnergy.Should().Be(179);
         }
 
         [Fact]
@@ -100,6 +96,33 @@ namespace AdventOfCode2019.DayTwelveTests
             orbitDashboard.Move(1000);
 
             orbitDashboard.TotalEnergy.Should().Be(7202);
+        }
+
+
+        [Fact]
+        public void ShouldAlignToSamePositionsAfterNumberOfSteps()
+        {
+            _orbitDashboard.Move(2772);
+
+            _orbitDashboard.Moons.Should().BeEquivalentTo(new[] {(-1, 0, 2), (2, -10, -7), (4, -8, 8), (3, 5, -1)});
+        }
+
+        [Fact]
+        public void ShouldCalculateStepsUntilFirstMatchingStateFound()
+        {
+            _orbitDashboard.StepsUntilFirstMatchingState().Should().Be(2772);
+        }
+
+        [Fact]
+        public void PartTwo()
+        {
+            const string initialState = @"<x=17, y=-9, z=4>
+<x=2, y=2, z=-13>
+<x=-1, y=5, z=-1>
+<x=4, y=7, z=-7>";
+            var orbitDashboard = new OrbitDashboard(initialState);
+            
+            orbitDashboard.StepsUntilFirstMatchingState().Should().Be(537881600740876);
         }
 
         public static IEnumerable<object[]> MovingStepsTestCases => new List<object[]>
