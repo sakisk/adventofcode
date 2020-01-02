@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace AdventOfCode2019.DayFive
@@ -7,14 +8,15 @@ namespace AdventOfCode2019.DayFive
     public class IntcodeComputer
     {
         public bool Completed { get; set; }
-        public string Memory => string.Join(",", _memory.Select(x => x.ToString()));
+        public string Memory => string.Join(",", MemoryStore.Select(x => x.ToString()));
         public int RelativeBase { get; set; }
 
-        private readonly IList<long> _memory;
+        public readonly IList<long> MemoryStore;
         private int _pc;
         private static long? _input;
         private MemoryManager _memoryManager;
-        public IList<long?> Output { get; }
+        private Dictionary<int, Action> _instructionSet;
+        public ObservableCollection<long?> Output { get; }
 
         public static IntcodeComputer Create(string program, int maxMemory = 0, int relativeBase = 0,
             long? input = default)
@@ -31,19 +33,15 @@ namespace AdventOfCode2019.DayFive
 
         private IntcodeComputer(IList<long> memory, int pc, int relativeBase, int maxMemorySize, long? input = default)
         {
-            Output = new List<long?>();
+            Output = new ObservableCollection<long?>();
             RelativeBase = relativeBase;
-            _memory = maxMemorySize > 0
+            MemoryStore = maxMemorySize > 0
                 ? new List<long>(memory.Concat(Enumerable.Repeat(0L, maxMemorySize - memory.Count)))
                 : memory;
             _pc = pc;
             _input = input;
-            _memoryManager = new MemoryManager(_memory, _pc, relativeBase);
-        }
-
-        public void Process()
-        {
-            var instructionSet = new Dictionary<int, Action>
+            _memoryManager = new MemoryManager(MemoryStore, _pc, relativeBase);
+            _instructionSet = new Dictionary<int, Action>
             {
                 {1, Add},
                 {2, Multiply},
@@ -56,13 +54,19 @@ namespace AdventOfCode2019.DayFive
                 {9, SetRelativeBase},
                 {99, Halt}
             };
-
-            instructionSet[_memoryManager.OperationCode].Invoke();
         }
+
+        public void Process() => _instructionSet[_memoryManager.OperationCode].Invoke();
+
+        public void Process(long input)
+        {
+            _input = input;
+            Process();
+        } 
 
         public void ProcessToEnd()
         {
-            while(!Completed)
+            while (!Completed)
                 Process();
         }
 
@@ -70,19 +74,19 @@ namespace AdventOfCode2019.DayFive
 
         private void Add()
         {
-            _memory[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) + _memoryManager.Operand(2);
+            MemoryStore[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) + _memoryManager.Operand(2);
             _memoryManager.NextInstruction(4);
         }
 
         private void Multiply()
         {
-            _memory[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) * _memoryManager.Operand(2);
+            MemoryStore[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) * _memoryManager.Operand(2);
             _memoryManager.NextInstruction(4);
         }
 
         private void StoreInput()
         {
-            _memory[_memoryManager.GetAddressIndex(1)] = _input ?? default;
+            MemoryStore[_memoryManager.GetAddressIndex(1)] = _input ?? default;
             _memoryManager.NextInstruction(2);
         }
 
@@ -110,24 +114,23 @@ namespace AdventOfCode2019.DayFive
 
         private void LessThan()
         {
-            _memory[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) < _memoryManager.Operand(2) ? 1 : 0;
+            MemoryStore[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) < _memoryManager.Operand(2) ? 1 : 0;
             _memoryManager.NextInstruction(4);
         }
 
         private void Equals()
         {
-            _memory[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) == _memoryManager.Operand(2) ? 1 : 0;
+            MemoryStore[_memoryManager.GetAddressIndex(3)] = _memoryManager.Operand(1) == _memoryManager.Operand(2) ? 1 : 0;
             _memoryManager.NextInstruction(4);
         }
 
         private void SetRelativeBase()
         {
-            _memoryManager.RelativeBase += (int)_memoryManager.Operand(1);
+            _memoryManager.RelativeBase += (int) _memoryManager.Operand(1);
             RelativeBase = _memoryManager.RelativeBase;
             _memoryManager.NextInstruction(2);
         }
 
         private static IList<long> ToIntcode(string program) => program.Split(',').Select(long.Parse).ToList();
     }
-
 }
