@@ -1,25 +1,22 @@
 ﻿using System.IO;
+using System.Linq;
 using AdventOfCode2019.DayThirteen;
 using FluentAssertions;
 using Xunit;
 
 namespace AdventOfCode2019.DayThirteenTests
 {
-    public class ArcadeGameTestsWhenGameStarts
+    public class ArcadeGameTestsWhenNewGame
     {
         private readonly ArcadeGame _arcadeGame;
 
-        public ArcadeGameTestsWhenGameStarts()
+        public ArcadeGameTestsWhenNewGame()
         {
             var gameCode = File.ReadAllText("input");
             _arcadeGame = new ArcadeGame(gameCode);
-            _arcadeGame.Start();
         }
 
         [Fact]
-        public void GridShouldNotBeEmpty() => _arcadeGame.Grid.Should().NotBeEmpty();
-
-        [Fact]
-        public void GridShouldHaveCorrectNumberOfBlockTiles() => _arcadeGame.Blocks.Should().HaveCount(253);
+        public void ShouldRenderCorrectNumberOfBlocks() => _arcadeGame.RenderArtifacts().Count(x => x.Id == 2).Should().Be(253);
     }
 }
