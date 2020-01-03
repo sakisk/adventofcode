@@ -40,7 +40,7 @@ The above list of reactions requires 165 ORE to produce 1 FUEL:
 - Consume 2 AB, 3 BC, 4 CA to produce 1 FUEL.
 Here are some larger examples:
 
-- *13312* `ORE` for 1 `FUEL`:
+- **13312** `ORE` for 1 `FUEL`:
 ```
 157 ORE => 5 NZVS
 165 ORE => 6 DCFZ
@@ -52,7 +52,7 @@ Here are some larger examples:
 165 ORE => 2 GPVTF
 3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT
 ```
-- *180697* `ORE` for 1 `FUEL`:
+- **180697** `ORE` for 1 `FUEL`:
 
 ```
 2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG
@@ -69,7 +69,7 @@ Here are some larger examples:
 176 ORE => 6 VJHF
 ```
 
-- *2210736* `ORE` for 1 `FUEL`:
+- **2210736** `ORE` for 1 `FUEL`:
 
 ```
 171 ORE => 8 CNZTR
