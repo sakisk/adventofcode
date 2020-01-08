@@ -30,10 +30,10 @@ namespace AdventOfCode2019.DayFourteen
             );
         }
 
-        public long React()
+        public long React(long fuel = 1L)
         {
             var ore = 0L;
-            var reactor = new Queue<(long Quantity, string Name)>(new[] {FuelRecipe.Single(x => x.Output.Chemical == "FUEL").Output});
+            var reactor = new Queue<(long Quantity, string Chemical)>(new[] {(Quantity: fuel, Chemical: "FUEL")});
             var leftOvers = FuelRecipe.ToDictionary(x => x.Output.Chemical, _ => 0L);
 
             while (reactor.Any())
@@ -49,7 +49,7 @@ namespace AdventOfCode2019.DayFourteen
                     if (quantity > 0)
                     {
                         var ((outputQuantity, _), ingredients) = FuelRecipe.Single(x => x.Output.Chemical == chemical);
-                        var multiplier = (int) Math.Ceiling((decimal) quantity / outputQuantity);
+                        var multiplier = (long) Math.Ceiling((decimal) quantity / outputQuantity);
                         leftOvers[chemical] = Math.Max(0L, multiplier * outputQuantity - quantity);
                         foreach (var (q, c) in ingredients)
                             reactor.Enqueue((q * multiplier, c));

@@ -5,36 +5,36 @@ using Xunit;
 
 namespace AdventOfCode2019.DayFourteenTests
 {
-    public class NanofactoryTestsReact
+    public class NanofactoryTestInterpolation
     {
         [Theory]
         [MemberData(nameof(ReactionInputs))]
-        public void ShouldReactWithCorrectOreConsumed(string input, long ore) =>
-            new Nanofactory(input).React().Should().Be(ore);
+        public void NanofactoryTestFuelProductionEstimationForTrillionOre(string input, int fuelForTrilionOre)
+        {
+            var nanofactory = new Nanofactory(input);
+            const long ore = 1000000000000L;
+            var fuel = 1L;
+            var newFuel = 0;
+            
+            while (true)
+            {
+                // analyzing 1000 first iterations of nanofactory produces fuel which increase with constant rate
+                // y = l * x where y is ore used to produce x fuel
+                // so when fuel increases ore increases by a constant factor l
+                // which will follow the magnitude of current fuel produced towards 10^12
+                newFuel = (int) ((double) ore / nanofactory.React(fuel) * fuel);
+
+                if (newFuel == fuel)
+                    break;
+
+                fuel = newFuel;
+            }
+
+            newFuel.Should().Be(fuelForTrilionOre);
+        }
 
         public static IEnumerable<object[]> ReactionInputs => new[]
         {
-            new object[]
-            {
-                @"10 ORE => 10 A
-1 ORE => 1 B
-7 A, 1 B => 1 C
-7 A, 1 C => 1 D
-7 A, 1 D => 1 E
-7 A, 1 E => 1 FUEL",
-                31
-            },
-            new object[]
-            {
-                @"9 ORE => 2 A
-8 ORE => 3 B
-7 ORE => 5 C
-3 A, 4 B => 1 AB
-5 B, 7 C => 1 BC
-4 C, 1 A => 1 CA
-2 AB, 3 BC, 4 CA => 1 FUEL",
-                165
-            },
             new object[]
             {
                 @"157 ORE => 5 NZVS
@@ -46,7 +46,7 @@ namespace AdventOfCode2019.DayFourteenTests
 7 DCFZ, 7 PSHF => 2 XJWVT
 165 ORE => 2 GPVTF
 3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT",
-                13312
+                82892753
             },
             new object[]
             {
@@ -62,7 +62,7 @@ namespace AdventOfCode2019.DayFourteenTests
 1 NVRVD => 8 CXFTF
 1 VJHF, 6 MNCFX => 4 RFSQX
 176 ORE => 6 VJHF",
-                180697
+                5586022
             },
             new object[]
             {
@@ -83,7 +83,7 @@ namespace AdventOfCode2019.DayFourteenTests
 121 ORE => 7 VRPVC
 7 XCVML => 6 RJRHP
 5 BHXH, 4 VRPVC => 5 LTCX",
-                2210736
+                460664
             },
             new object[]
             {
@@ -149,7 +149,7 @@ namespace AdventOfCode2019.DayFourteenTests
 8 TKMGN => 7 DGXQJ
 1 JLSHT, 20 KSJPW => 7 VMVJS
 16 DJSW, 1 PGJC, 4 FXLD => 8 WNVTR",
-                136771
+                8193614
             },
         };
     }
