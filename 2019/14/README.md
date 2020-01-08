@@ -1,4 +1,6 @@
 # Day 14: Space Stoichiometry
+
+## Part One
 As you approach the rings of Saturn, your ship's low fuel indicator turns on. There isn't any fuel here, but the rings have plenty of raw material. Perhaps your ship's Inter-Stellar Refinery Union brand nanofactory can turn these raw materials into fuel.
 
 You ask the nanofactory to produce a list of the reactions it can perform that are relevant to this process (your puzzle input). Every reaction turns some quantities of specific input chemicals into some quantity of an output chemical. Almost every chemical is produced by exactly one reaction; the only exception, ORE, is the raw material input to the entire process and is not produced by a reaction.
@@ -156,3 +158,14 @@ Given the list of reactions in your puzzle input, what is the minimum amount of 
 1 JLSHT, 20 KSJPW => 7 VMVJS
 16 DJSW, 1 PGJC, 4 FXLD => 8 WNVTR
 ```
+## Part Two
+After collecting ORE for a while, you check your cargo hold: 1 trillion (1000000000000) units of ORE.
+
+With that much ore, given the examples above:
+
+The 13312 ORE-per-FUEL example could produce 82892753 FUEL.
+The 180697 ORE-per-FUEL example could produce 5586022 FUEL.
+The 2210736 ORE-per-FUEL example could produce 460664 FUEL.
+Given 1 trillion ORE, what is the maximum amount of FUEL you can produce?
+
+Your puzzle answer was 8193614.
