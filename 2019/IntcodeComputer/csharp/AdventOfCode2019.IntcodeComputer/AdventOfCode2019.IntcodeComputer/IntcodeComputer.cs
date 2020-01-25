@@ -1,48 +1,48 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AdventOfCode2019.IntcodeComputer
 {
     public class IntcodeComputerMachine
     {
         public Memory Memory { get; }
-        public bool Halted => Opcode == Opcode.Halt;
-        
+        public bool Halted { get; private set; }
+
         private int _programCounter;
-        
+        private readonly Dictionary<int, Action> _instructionSet;
+
         public IntcodeComputerMachine(string program)
         {
             Memory = new Memory(program);
             _programCounter = 0;
-        }
-
-        private Opcode Opcode => (Opcode)Memory.Intcode[_programCounter];
-
-        public void Run()
-        {
-            var opcode = Opcode;
-            int Address(int i) => (int)Memory[_programCounter + i];
-            long Operand(int i) => Memory[Address(i)];
-
-            switch (opcode)
+            _instructionSet = new Dictionary<int, Action>
             {
-                case Opcode.Add: 
-                    Memory[Address(3)] = Operand(1) + Operand(2);
-                    _programCounter += 4;
-                    break;
-                case Opcode.Multiply:
-                    Memory[Address(3)] = Operand(1) * Operand(2);
-                    _programCounter += 4;
-                    break;
-                case Opcode.Halt: break;
-                default: throw new ArgumentException($"Invalid opcode: {opcode}");
-            }
+                {1, Add},
+                {2, Multiply},
+                {99, Halt},
+            };
         }
-    }
+        
+        public void Run() => _instructionSet[Opcode]();
 
-    public enum Opcode
-    {
-        Add = 1,
-        Multiply = 2,
-        Halt = 99
+        private int Address(int i) => (int) Memory[_programCounter + i];
+        
+        private long Operand(int i) => Memory[Address(i)];
+        
+        private int Opcode => (int) Memory[_programCounter];
+        
+        private void Add()
+        {
+            Memory[Address(3)] = Operand(1) + Operand(2);
+            _programCounter += 4;
+        }
+        
+        private void Multiply()
+        {
+            Memory[Address(3)] = Operand(1) * Operand(2);
+            _programCounter += 4;
+        }
+
+        private void Halt() => Halted = true;
     }
 }
