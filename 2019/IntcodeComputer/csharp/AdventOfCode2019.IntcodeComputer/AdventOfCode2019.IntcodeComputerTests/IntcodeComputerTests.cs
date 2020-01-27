@@ -8,6 +8,6 @@ namespace AdventOfCode2019.IntcodeComputerTests
     {
         [Fact]
         public void ShouldLoadProgramToMemory() => 
-            new IntcodeComputerMachine("1,0,0,3,99").Memory.Intcode.Should().NotBeEmpty();
+            new IntcodeComputerMachine("1,0,0,3,99").Memory.Intcode.Should().HaveCount(5);
     }
 }
